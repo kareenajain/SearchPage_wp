@@ -811,10 +811,8 @@ function my_css()
 
 
 	//  Page custom styles 
-	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/spstyle.css', array(), wp_get_theme()->get('Version'));
+	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/styles.css', array(), wp_get_theme()->get('Version'));
 	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/font-awesome/css/font-awesome.css', array(), wp_get_theme()->get('Version'));
-	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/spstyle.css', array(), wp_get_theme()->get('Version'));
-	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/spstyle.css', array(), wp_get_theme()->get('Version'));
 	
 }
 add_action('wp_enqueue_scripts', 'my_css');

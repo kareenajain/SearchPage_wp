@@ -12,7 +12,7 @@
 get_header(); ?>
 
     <?php if(get_field('banner_image')) { ?> 
-		   <div class="container-fluid cmm_banner" style="background-image:url('<?php the_field('banner_image'); ?>');">
+		   <div class="container-fluid cmm_banner eeeee" style="background-image:url('<?php the_field('banner_image'); ?>');">
 	  <?php } else { ?>
 		   <div class="container-fluid cmm_banner" style="background-image:url('<?php bloginfo('template_url'); ?>/assets/images/service_banner.png');">
 	  <?php } ?>

@@ -31,7 +31,7 @@
     </section>
 	
     <?php wp_footer(); ?>
-    <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/spscript.js"></script>
+    <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/script.js"></script>
 
   
 </body>
