@@ -30,6 +30,8 @@
  * Note that this function is hooked into the after_setup_theme hook, which
  * runs before the init hook. The init hook is too late for some features, such
  * as indicating support for post thumbnails.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_theme_support() {
 
@@ -183,6 +185,8 @@ require get_template_directory() . '/inc/block-patterns.php';
 
 /**
  * Register and Enqueue Styles.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_register_styles() {
 
@@ -192,7 +196,10 @@ function twentytwenty_register_styles() {
 	wp_style_add_data( 'twentytwenty-style', 'rtl', 'replace' );
 
 	// Add output of Customizer settings as inline style.
-	wp_add_inline_style( 'twentytwenty-style', twentytwenty_get_customizer_css( 'front-end' ) );
+	$customizer_css = twentytwenty_get_customizer_css( 'front-end' );
+	if ( $customizer_css ) {
+		wp_add_inline_style( 'twentytwenty-style', $customizer_css );
+	}
 
 	// Add print CSS.
 	wp_enqueue_style( 'twentytwenty-print-style', get_template_directory_uri() . '/print.css', null, $theme_version, 'print' );
@@ -203,6 +210,8 @@ add_action( 'wp_enqueue_scripts', 'twentytwenty_register_styles' );
 
 /**
  * Register and Enqueue Scripts.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_register_scripts() {
 
@@ -213,8 +222,6 @@ function twentytwenty_register_scripts() {
 	}
 
 	wp_enqueue_script( 'twentytwenty-js', get_template_directory_uri() . '/assets/js/index.js', array(), $theme_version, false );
-
-	wp_enqueue_script( 'scp', get_template_directory_uri() . '/assets/js/spscript.js', array(), $theme_version, false );
 	wp_script_add_data( 'twentytwenty-js', 'async', true );
 
 }
@@ -226,6 +233,8 @@ add_action( 'wp_enqueue_scripts', 'twentytwenty_register_scripts' );
  *
  * This does not enqueue the script because it is tiny and because it is only for IE11,
  * thus it does not warrant having an entire dedicated blocking script being loaded.
+ *
+ * @since Twenty Twenty 1.0
  *
  * @link https://git.io/vWdr2
  */
@@ -239,7 +248,8 @@ function twentytwenty_skip_link_focus_fix() {
 }
 add_action( 'wp_print_footer_scripts', 'twentytwenty_skip_link_focus_fix' );
 
-/** Enqueue non-latin language styles
+/**
+ * Enqueue non-latin language styles.
  *
  * @since Twenty Twenty 1.0
  *
@@ -257,15 +267,17 @@ add_action( 'wp_enqueue_scripts', 'twentytwenty_non_latin_languages' );
 
 /**
  * Register navigation menus uses wp_nav_menu in five places.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_menus() {
 
 	$locations = array(
-		'top'    => __( 'Top Menu', 'twentytwenty' ),
-		'main menu' => __( 'main menu', 'twentytwenty' ),
-		'footer menu' => __( 'footer menu', 'twentytwenty' ),
-		'f menu' => __( 'f menu', 'twentytwenty' ),
-		'Service menu' => __( 'Service menu', 'twentytwenty' )
+		'primary'  => __( 'Desktop Horizontal Menu', 'twentytwenty' ),
+		'expanded' => __( 'Desktop Expanded Menu', 'twentytwenty' ),
+		'mobile'   => __( 'Mobile Menu', 'twentytwenty' ),
+		'footer'   => __( 'Footer Menu', 'twentytwenty' ),
+		'social'   => __( 'Social Menu', 'twentytwenty' ),
 	);
 
 	register_nav_menus( $locations );
@@ -275,6 +287,8 @@ add_action( 'init', 'twentytwenty_menus' );
 
 /**
  * Get the information about the logo.
+ *
+ * @since Twenty Twenty 1.0
  *
  * @param string $html The HTML output from get_custom_logo (core function).
  * @return string
@@ -333,23 +347,33 @@ if ( ! function_exists( 'wp_body_open' ) ) {
 
 	/**
 	 * Shim for wp_body_open, ensuring backward compatibility with versions of WordPress older than 5.2.
+	 *
+	 * @since Twenty Twenty 1.0
 	 */
 	function wp_body_open() {
+		/** This action is documented in wp-includes/general-template.php */
 		do_action( 'wp_body_open' );
 	}
 }
 
 /**
  * Include a skip to content link at the top of the page so that users can bypass the menu.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_skip_link() {
-	echo '<a class="skip-link screen-reader-text" href="#site-content">' . __( 'Skip to the content', 'twentytwenty' ) . '</a>';
+	echo '<a class="skip-link screen-reader-text" href="#site-content">' .
+		/* translators: Hidden accessibility text. */
+		__( 'Skip to the content', 'twentytwenty' ) .
+	'</a>';
 }
 
 add_action( 'wp_body_open', 'twentytwenty_skip_link', 5 );
 
 /**
  * Register widget areas.
+ *
+ * @since Twenty Twenty 1.0
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
@@ -393,6 +417,8 @@ add_action( 'widgets_init', 'twentytwenty_sidebar_registration' );
 
 /**
  * Enqueue supplemental block editor styles.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_block_editor_styles() {
 
@@ -401,10 +427,16 @@ function twentytwenty_block_editor_styles() {
 	wp_style_add_data( 'twentytwenty-block-editor-styles', 'rtl', 'replace' );
 
 	// Add inline style from the Customizer.
-	wp_add_inline_style( 'twentytwenty-block-editor-styles', twentytwenty_get_customizer_css( 'block-editor' ) );
+	$customizer_css = twentytwenty_get_customizer_css( 'block-editor' );
+	if ( $customizer_css ) {
+		wp_add_inline_style( 'twentytwenty-block-editor-styles', $customizer_css );
+	}
 
 	// Add inline style for non-latin fonts.
-	wp_add_inline_style( 'twentytwenty-block-editor-styles', TwentyTwenty_Non_Latin_Languages::get_non_latin_css( 'block-editor' ) );
+	$custom_css = TwentyTwenty_Non_Latin_Languages::get_non_latin_css( 'block-editor' );
+	if ( $custom_css ) {
+		wp_add_inline_style( 'twentytwenty-block-editor-styles', $custom_css );
+	}
 
 	// Enqueue the editor script.
 	wp_enqueue_script( 'twentytwenty-block-editor-script', get_theme_file_uri( '/assets/js/editor-script-block.js' ), array( 'wp-blocks', 'wp-dom' ), wp_get_theme()->get( 'Version' ), true );
@@ -414,6 +446,8 @@ add_action( 'enqueue_block_editor_assets', 'twentytwenty_block_editor_styles', 1
 
 /**
  * Enqueue classic editor styles.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_classic_editor_styles() {
 
@@ -431,12 +465,18 @@ add_action( 'init', 'twentytwenty_classic_editor_styles' );
  * Output Customizer settings in the classic editor.
  * Adds styles to the head of the TinyMCE iframe. Kudos to @Otto42 for the original solution.
  *
+ * @since Twenty Twenty 1.0
+ *
  * @param array $mce_init TinyMCE styles.
  * @return array TinyMCE styles.
  */
 function twentytwenty_add_classic_editor_customizer_styles( $mce_init ) {
 
 	$styles = twentytwenty_get_customizer_css( 'classic-editor' );
+
+	if ( ! $styles ) {
+		return $mce_init;
+	}
 
 	if ( ! isset( $mce_init['content_style'] ) ) {
 		$mce_init['content_style'] = $styles . ' ';
@@ -481,6 +521,8 @@ add_filter( 'tiny_mce_before_init', 'twentytwenty_add_classic_editor_non_latin_s
 /**
  * Block Editor Settings.
  * Add custom colors and font sizes to the block editor.
+ *
+ * @since Twenty Twenty 1.0
  */
 function twentytwenty_block_editor_settings() {
 
@@ -634,7 +676,7 @@ add_action( 'customize_preview_init', 'twentytwenty_customize_preview_init' );
  *
  * @since Twenty Twenty 1.0
  *
- * @param string $area The area we want to get the colors for.
+ * @param string $area    The area we want to get the colors for.
  * @param string $context Can be 'text' or 'accent'.
  * @return string Returns a HEX color.
  */
@@ -752,29 +794,46 @@ function twentytwenty_get_elements_array() {
 	);
 
 	/**
-	* Filters Twenty Twenty theme elements
-	*
-	* @since Twenty Twenty 1.0
-	*
-	* @param array Array of elements
-	*/
+	 * Filters Twenty Twenty theme elements.
+	 *
+	 * @since Twenty Twenty 1.0
+	 *
+	 * @param array Array of elements.
+	 */
 	return apply_filters( 'twentytwenty_get_elements_array', $elements );
 }
 
 
-function cptui_register_my_cpts_portfolo_post() {
+
+
+function my_css()
+{
+
+
+	//  Page custom styles 
+	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/spstyle.css', array(), wp_get_theme()->get('Version'));
+	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/font-awesome/css/font-awesome.css', array(), wp_get_theme()->get('Version'));
+	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/spstyle.css', array(), wp_get_theme()->get('Version'));
+	wp_enqueue_style('styles.css', get_template_directory_uri() . '/assets/css/spstyle.css', array(), wp_get_theme()->get('Version'));
+	
+}
+add_action('wp_enqueue_scripts', 'my_css');
+
+
+
+function register_Projects() {
 
 	/**
-	 * Post Type: Projects Post.
+	 * Post Type: Projects.
 	 */
 
 	$labels = [
-		"name" => __( "Project Post", "twentyseventeen" ),
-		"singular_name" => __( "Project Post", "twentyseventeen" ),
+		"name" => __( "Project", "twentyseventeen" ),
+		"singular_name" => __( "Project", "twentyseventeen" ),
 	];
 
 	$args = [
-		"label" => __( "Project Post", "twentyseventeen" ),
+		"label" => __( "Project", "twentyseventeen" ),
 		"labels" => $labels,
 		"description" => "",
 		"public" => true,
@@ -783,145 +842,20 @@ function cptui_register_my_cpts_portfolo_post() {
 		"show_in_rest" => true,
 		"rest_base" => "",
 		"rest_controller_class" => "WP_REST_Posts_Controller",
-		"has_archive" => false,
+		"has_archive" => true,
 		"show_in_menu" => true,
 		"show_in_nav_menus" => true,
 		"delete_with_user" => false,
 		"exclude_from_search" => false,
 		"capability_type" => "post",
 		"map_meta_cap" => true,
-		"hierarchical" => false,
-		"rewrite" => [ "slug" => "Project_post", "with_front" => true ],
+		"hierarchical" => true,
+		"rewrite" => array( 'slug' => 'Project' ),
 		"query_var" => true,
 		"supports" => [ "title", "editor", "thumbnail" ],
 	];
 
-	register_post_type( "Project_post", $args );
+	register_post_type( "Project", $args );
 }
- function project_category() {
-
-   register_taxonomy(
-
-   'project_cat',
-
-    'project_post',
-
-    array(
-
-       'label' => __( 'Project Cateogry' ),
-
-      'rewrite' => array( 'slug' => 'Project_post' ),
-
-      'hierarchical' => true,
-     )
-
-   );
- }
-
- add_action( 'init', 'project_category' );
-add_action( 'init', 'cptui_register_my_cpts_portfolo_post' );
-
-
-add_action( 'init', 'create_post_type' );
-function create_post_type() {
-	
-	register_post_type( 'Testimonial',
-		array(
-		  'labels' => array(
-			'name' => __( 'Testimonial' ),
-			'singular_name' => __( 'testimonial' )
-		  ),
-			'public'              => true,
-			'show_ui'             => true,
-			'exclude_from_search' => true,
-			'hierarchical'        => true,
-			'supports'            => array( 'title', 'editor', 'author', 'thumbnail','page-attributes' ),
-			'query_var'           => true,
-			'has_archive'         => true,
-		)
-	);
-	
-	
-}
-
-
-function wpbeginner_numeric_posts_nav() {
-	if( is_singular() )
-		return;
-	global $wp_query;
-	/** Stop execution if there's only 1 page */
-	if( $wp_query->max_num_pages <= 1 )
-		return;
-	$paged = get_query_var( 'paged' ) ? absint( get_query_var( 'paged' ) ) : 1;
-	$max   = intval( $wp_query->max_num_pages );
-	/**	Add current page to the array */
-	if ( $paged >= 1 )
-		$links[] = $paged;
-	/**	Add the pages around the current page to the array */
-	if ( $paged >= 3 ) {
-		$links[] = $paged - 1;
-		$links[] = $paged - 2;
-	}
-	if ( ( $paged + 2 ) <= $max ) {
-		$links[] = $paged + 2;
-		$links[] = $paged + 1;
-	}
-	echo '<div class="pagination"><ul>' . "\n";
-	/**	Previous Post Link */
-	if ( get_previous_posts_link() )
-		printf( '<li class="prev">%s</li>' . "\n", get_previous_posts_link('<i class="fa fa-chevron-left" aria-hidden="true"></i>') );
-	/**	Link to first page, plus ellipses if necessary */
-	if ( ! in_array( 1, $links ) ) {
-		$class = 1 == $paged ? ' class="active"' : '';
-		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( 1 ) ), '1' );
-		if ( ! in_array( 2, $links ) )
-			echo '<li>…</li>';
-	}
-	/**	Link to current page, plus 2 pages in either direction if necessary */
-	sort( $links );
-	foreach ( (array) $links as $link ) {
-		$class = $paged == $link ? ' class="active"' : '';
-		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $link ) ), $link );
-	}
-	/**	Link to last page, plus ellipses if necessary */
-	if ( ! in_array( $max, $links ) ) {
-		if ( ! in_array( $max - 1, $links ) )
-			echo '<li>…</li>' . "\n";
-		$class = $paged == $max ? ' class="active"' : '';
-		printf( '<li%s><a href="%s">%s</a></li>' . "\n", $class, esc_url( get_pagenum_link( $max ) ), $max );
-	}
-	/**	Next Post Link */
-	if ( get_next_posts_link() )
-		printf( '<li class="next">%s</li>' . "\n", get_next_posts_link('<i class="fa fa-chevron-right" aria-hidden="true"></i>') );
-	echo '</ul></div>' . "\n";
-}
-
-
-
-function my_acf_google_map_api( $api ){
-	
-	$api['key'] = 'AIzaSyCmp7PGAtdUmMfW7z8BnZg8Ei_-se8C9Bc';
-	
-	return $api;
-	
-}
-add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
-
-
-function wpb_comment_count() { 
-$comments_count = wp_count_comments();
-$message =  'No comments yet '.  $comments_count->approved . '';
  
-return $message; 
-} 
- 
-add_shortcode('wpb_total_comments','wpb_comment_count'); 
-
-
-function fpw_enqueue_scripts() {
-    if ( is_single() ) { 
-        wp_register_script( 'fpw_remove_novalidate', get_stylesheet_directory_uri() . '/removenovalidate.js', array( 'jquery' ), false, true );
-        wp_enqueue_script( 'fpw_remove_novalidate' );
-    }
-}
-add_action('wp_enqueue_scripts', 'fpw_enqueue_scripts', 10 );
+add_action( 'init', 'register_Projects' );

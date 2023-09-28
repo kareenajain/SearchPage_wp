@@ -32,15 +32,7 @@
 	
     <?php wp_footer(); ?>
     <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/spscript.js"></script>
-    <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/jquery.min.js"></script>
-	<script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/bootstrap.min.js"></script>
-	<script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/slick.js"></script>
-	<script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/ekko-lightbox.min.js"></script>
-    <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/custom.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmp7PGAtdUmMfW7z8BnZg8Ei_-se8C9Bc&callback=initMap" type="text/javascript"></script>
-    <script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/owl.carousel.min.js"></script>
-	<script src="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/js/map.js"></script>
-	
+
   
 </body>
 </html>
